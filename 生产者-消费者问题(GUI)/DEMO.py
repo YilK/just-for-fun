@@ -1,3 +1,4 @@
+# ProducterAndConsumer
 import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, \
@@ -67,11 +68,6 @@ class Example(QWidget):
         self.cumButton2 = QPushButton('消费者2')
         self.cumButton3 = QPushButton('消费者3')
 
-        # 一开始仓库没有产品，设置消费者按钮不可按
-        self.cumButton1.setEnabled(False)
-        self.cumButton2.setEnabled(False)
-        self.cumButton3.setEnabled(False)
-
         # 设置按钮上的字体
         self.proButton1.setFont(self.font2)
         self.proButton2.setFont(self.font2)
@@ -128,7 +124,7 @@ class Example(QWidget):
         author = QLineEdit('GitHub: YilK', self)
         author.setFont(font4)
         place = QLineEdit('CSDN: Yk_0311', self)
-        place.resize(120,30)
+        place.resize(120, 30)
         place.setFont(font4)
         author.move(5, 260)
         place.move(5, 290)
@@ -152,48 +148,98 @@ class Example(QWidget):
         else:
             product = '3-C++'
 
-        if self.lineEdit3.text() != '':  # 如果仓库已经满了
-            # 进入阻塞队列
-            for item in self.Block_queue:  # 遍历阻塞队列的空间
-                if item.text() == "":  # 该空间为空
-                    item.setFont(self.font3)
-                    item.setText(product)  # 添加产品
-                    self.sender().setEnabled(False)  # 将对应生产者的按钮设置为不可按
-                    break
-        else:  # 如果仓库还没有满
-            for item in self.wavehouse:  # 遍历仓库的空间
-                if item.text() == '':  # 该空间为空
-                    item.setFont(self.font3)
-                    item.setText(product)  # 添加产品
+        if self.lineEdit1.text() == '':  # 如果仓库为空
+            # 先检查阻塞队列
+            if self.lineEdit4.text() != '':  # 阻塞队列不为空，消费者阻塞了
+                # 判断是哪个消费者阻塞了
+                if self.lineEdit4.text()[-1] == '1':
+                    button = 1  # 做标记，后面要将消费者按钮设置为可按
+                    # self.cumButton1.setEnabled(True)
 
-                    # 当添加入商品之后，所有的消费者按钮设置为可按
+                elif self.lineEdit4.text()[-1] == '2':
+                    button = 2
+
+                else:
+                    button = 3
+
+                # 将阻塞的消费者删除
+                for i in range(len(self.Block_queue) - 1):
+                    self.Block_queue[i].setText(self.Block_queue[i + 1].text())
+                self.Block_queue[2].setText('')
+                # 对应的消费者按钮设置为可按
+                if button == 1:
                     self.cumButton1.setEnabled(True)
+                elif button == 2:
                     self.cumButton2.setEnabled(True)
+                else:
                     self.cumButton3.setEnabled(True)
-                    break
+
+            else:  # 如果阻塞队列也为空
+                for item in self.wavehouse:  # 遍历仓库的空间
+                    if item.text() == '':  # 该空间为空
+                        item.setFont(self.font3)
+                        item.setText(product)  # 添加产品
+                        break
+
+        else:
+            if self.lineEdit3.text() != '':  # 如果仓库已经满了
+
+                # 进入阻塞队列
+                for item in self.Block_queue:  # 遍历阻塞队列的空间
+                    if item.text() == "":  # 该空间为空
+                        item.setFont(self.font3)
+                        item.setText(product)  # 添加产品
+                        self.sender().setEnabled(False)  # 将对应生产者的按钮设置为不可按
+                        break
+            else:  # 如果仓库还没有满
+
+                for item in self.wavehouse:  # 遍历仓库的空间
+                    if item.text() == '':  # 该空间为空
+                        item.setFont(self.font3)
+                        item.setText(product)  # 添加产品
+                        break
 
     def pressC(self):
-        """处理消费者按钮按下产生的事件"""
-        for i in range(len(self.wavehouse) - 1):
-            self.wavehouse[i].setText(self.wavehouse[i + 1].text())
+        source = self.sender()
+        consumer = source.text()  # 指明哪一个消费者
 
-        self.lineEdit3.setText(self.lineEdit4.text())
-
-        if self.lineEdit3.text() == '1-Java':
-            self.proButton1.setEnabled(True)
-        elif self.lineEdit3.text() == '2-Python':
-            self.proButton2.setEnabled(True)
+        if consumer[-1] == '1':
+            consume = 'consumer1'
+        elif consumer[-1] == '2':
+            consume = 'consumer2'
         else:
-            self.proButton3.setEnabled(True)
+            consume = 'consumer3'
 
-        for j in range(len(self.Block_queue) - 1):
-            self.Block_queue[j].setText(self.Block_queue[j + 1].text())
-        self.lineEdit6.setText('')
+        if self.lineEdit1.text() == '':  # 如果仓库中没有产品
+            # self.sender().setEnabled(False)
+            # if self.sender().
+            for item in self.Block_queue:  # 遍历阻塞队列的空间
+                if item.text() == "":  # 该空间为空
+                    item.setFont(self.font3)  # 设置字体
+                    item.setText(consume)
+                    self.sender().setEnabled(False)  # 设置为不可按
+                    break
 
-        if self.lineEdit1.text() == '':
-            self.cumButton1.setEnabled(False)
-            self.cumButton2.setEnabled(False)
-            self.cumButton3.setEnabled(False)
+        else:  # 如果仓库中有产品
+            # 遍历仓库，取走一个位置的产品
+            for i in range(len(self.wavehouse) - 1):
+                self.wavehouse[i].setText(self.wavehouse[i + 1].text())
+
+            # 将阻塞队列的第一个产品放入仓库
+            self.lineEdit3.setText(self.lineEdit4.text())
+
+            # 从阻塞队列进入到仓库的产品对应的生产者按钮设置为可按
+            if self.lineEdit3.text() == '1-Java':
+                self.proButton1.setEnabled(True)
+            elif self.lineEdit3.text() == '2-Python':
+                self.proButton2.setEnabled(True)
+            else:
+                self.proButton3.setEnabled(True)
+
+            # 阻塞队列中产品往前移
+            for j in range(len(self.Block_queue) - 1):
+                self.Block_queue[j].setText(self.Block_queue[j + 1].text())
+            self.lineEdit6.setText('')
 
 
 if __name__ == '__main__':
