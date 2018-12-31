@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@android:color/darker_gray"
+
+        android:text="     name                         student_ID                      age"
+        />
+    //使用ListView控件显示数据库中的信息
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        ></ListView>
+
+    //姓名编辑框
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:hint="Student_name"/>
+
+    //学号编辑框
+    <EditText
+        android:id="@+id/ID"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:hint="Student_ID"/>
+
+    //年龄编辑框
+    <EditText
+        android:id="@+id/age"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:padding="10dp"
+        android:hint="Student_age"/>
+
+    //插入按钮
+    <Button
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="45dp"
+        android:text="添加" />
+
+    //修改按钮
+    <Button
+        android:id="@+id/update"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="45dp"
+        android:text="修改"/>
+
+    //查询按钮
+    <Button
+        android:id="@+id/select"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="45dp"
+        android:text="查找"/>
+
+    //删除按钮
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="45dp"
+        android:text="删除"/>
+
+</LinearLayout>
